@@ -23,6 +23,12 @@
   title="Календар подій Kyiv Media Hub" allow="clipboard-write"></iframe>
 <div class="fallback" id="fb">Календар не завантажився? <a href="https://script.google.com/macros/s/AKfycbwMhdgaz3oz9_vJONUGLl972NymnlZU9DLmv3SCZa6rDgdYl7zeLQaiL_m5_-7xWMV9/exec" target="_blank" rel="noopener">Відкрити напряму</a></div>
 <script>
+  // kmh-events/#room відкриває одразу вкладку бронювання переговорної.
+  if (/^#(room|kimnata|booking)$/i.test(location.hash)) {
+    var f = document.getElementById('app');
+    f.src = f.src + '?tab=room';
+    document.title = 'Бронювання переговорної · Kyiv Media Hub';
+  }
   var loaded = false;
   document.getElementById('app').addEventListener('load', function () { loaded = true; });
   setTimeout(function () { if (!loaded) document.getElementById('fb').style.display = 'block'; }, 12000);
