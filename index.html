@@ -23,12 +23,22 @@
   title="Календар подій Kyiv Media Hub" allow="clipboard-write"></iframe>
 <div class="fallback" id="fb">Календар не завантажився? <a href="https://script.google.com/macros/s/AKfycbwMhdgaz3oz9_vJONUGLl972NymnlZU9DLmv3SCZa6rDgdYl7zeLQaiL_m5_-7xWMV9/exec" target="_blank" rel="noopener">Відкрити напряму</a></div>
 <script>
-  // kmh-events/#room відкриває одразу вкладку бронювання переговорної.
-  if (/^#(room|kimnata|booking)$/i.test(location.hash)) {
+  // kmh-events/#room – одразу вкладка бронювання переговорної.
+  // kmh-events/#admin=<ключ> – режим команди: редагування подій і список усіх броней.
+  // Ключ стоїть лише в посиланні після #, тому не потрапляє ні в цей файл, ні на сервер GitHub.
+  (function () {
+    var h = location.hash.replace(/^#/, ''), q = [];
+    var key = (h.match(/(?:^|&)admin=([A-Za-z0-9]+)/) || [])[1];
+    if (key) q.push('admin=' + key);
+    if (/(?:^|&)(room|kimnata|booking)(?:&|$)/i.test(h)) q.push('tab=room');
+    if (!q.length) return;
     var f = document.getElementById('app');
-    f.src = f.src + '?tab=room';
-    document.title = 'Бронювання переговорної · Kyiv Media Hub';
-  }
+    f.src = f.src + '?' + q.join('&');
+    document.title = (key ? 'Адмінка · ' : '') + (/tab=room/.test(q.join()) ? 'Бронювання переговорної' : 'Події') + ' · Kyiv Media Hub';
+    if (key) {
+      var m = document.createElement('meta'); m.name = 'robots'; m.content = 'noindex'; document.head.appendChild(m);
+    }
+  })();
   var loaded = false;
   document.getElementById('app').addEventListener('load', function () { loaded = true; });
   setTimeout(function () { if (!loaded) document.getElementById('fb').style.display = 'block'; }, 12000);
